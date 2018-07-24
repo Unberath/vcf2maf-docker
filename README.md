@@ -24,24 +24,23 @@ Download and Prepare VEP Data Dependencies
 Download and unpack VEP's offline cache for GRCh37
 
     export VEP_DATA=$HOME/.vep
-    cd $VEP_DATA
-    rsync -zvh rsync://ftp.ensembl.org/ensembl/pub/release-91/variation/VEP/homo_sapiens_vep_91_GRCh37.tar.gz $VEP_DATA
-    tar -izxf homo_sapiens_vep_91_GRCh37.tar.gz
-	cd 91_GRCh37
-    wget http://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz
+    mkdir $VEP_DATA && cd $VEP_DATA
+    curl --progress-bar -O ftp://ftp.ensembl.org/pub/release-91/variation/VEP/homo_sapiens_vep_91_GRCh37.tar.gz
+    tar xzf homo_sapiens_vep_91_GRCh37.tar.gz
+	cd homo_sapiens/91_GRCh37
+    curl --progress-bar -O  ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz
     gunzip Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz
-    ??? bgzip Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz ???
 
-~~Download and index a custom ExAC r0.3 VCF, that skips variants overlapping known somatic hotspots:~~
+Convert the offline cache for use with tabix, that significantly speeds up the lookup of known variants:
+
+    docker run -v $VEP_DATA:/mnt vcf2maf perl /root/vep/convert_cache.pl --species homo_sapiens --version 91_GRCh37 --dir /mnt
+
+Optional and untested: Download and index a custom ExAC r0.3 VCF, that skips variants overlapping known somatic hotspots:
 
     curl -L ftp://ftp.broadinstitute.org:/pub/ExAC_release/release0.3.1/subsets/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz > $VEP_DATA/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz
     bcftools filter --targets ^2:25457242-25457243,12:121176677-121176678 --output-type b --output $VEP_DATA/ExAC_nonTCGA.r0.3.1.sites.minus_somatic.vep.vcf.gz $VEP_DATA/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz
     mv -f $VEP_DATA/ExAC_nonTCGA.r0.3.1.sites.minus_somatic.vep.vcf.gz $VEP_DATA/ExAC_nonTCGA.r0.3.1.sites.vep.vcf.gz
     tabix -p vcf $VEP_DATA/ExAC.r0.3.sites.minus_somatic.vcf.gz
-
-Convert the offline cache for use with tabix, that significantly speeds up the lookup of known variants:
-
-    docker run -v $VEP_DATA:/mnt vcf2maf perl /root/vep/convert_cache.pl --species homo_sapiens --version 91_GRCh37 --dir /mnt
 
 
 License
