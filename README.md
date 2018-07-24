@@ -15,7 +15,7 @@ To view the vcf2maf source code, [click here](https://github.com/mskcc/vcf2maf/)
 
 After building the image, you can test it like so:
 
-    docker run -v /vep/data/path/homo_sapiens:/mnt/homo_sapiens vcf2maf perl vcf2maf.pl --input-vcf data/test.vcf --output-maf data/test.vep.maf --vep-data /mnt/ --ref-fasta /mnt/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa
+    docker run -v $HOME/.vep/homo_sapiens:/mnt/homo_sapiens -v $HOME/vcf2maf/output:/output vcf2maf perl vcf2maf.pl --input-vcf tests/test.vcf --output-maf /output/test.vep.maf --vep-data /mnt/ --ref-fasta /mnt/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --filter-vcf 0 --cache-version 91
 
 
 Download and Prepare VEP Data Dependencies
