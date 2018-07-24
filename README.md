@@ -15,7 +15,7 @@ To view the vcf2maf source code, [click here](https://github.com/mskcc/vcf2maf/)
 
 After building the image (and setting up the cache files), you can test it like so:
 
-    docker run -v $HOME/.vep/homo_sapiens:/mnt/homo_sapiens -v $HOME/vcf2maf/output:/output vcf2maf perl vcf2maf.pl --input-vcf tests/test.vcf --output-maf /output/test.vep.maf --vep-data /mnt/ --ref-fasta /mnt/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --filter-vcf 0 --cache-version 91
+    docker run -v $VEP_DATA/homo_sapiens:/mnt/homo_sapiens -v $OUTPUT_DIR:/output vcf2maf perl vcf2maf.pl --input-vcf tests/test.vcf --output-maf /output/test.vep.maf --vep-data /mnt/ --ref-fasta /mnt/homo_sapiens/91_GRCh37/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa --filter-vcf 0 --cache-version 91
 
 
 Download and Prepare VEP Data Dependencies
@@ -24,7 +24,9 @@ Download and Prepare VEP Data Dependencies
 Download and unpack VEP's offline cache for GRCh37
 
     export VEP_DATA=$HOME/.vep
-    mkdir $VEP_DATA && cd $VEP_DATA
+	export OUTPUT_DIR=$HOME/vcf2maf/output
+    mkdir $OUTPUT_DIR
+	mkdir $VEP_DATA && cd $VEP_DATA
     curl --progress-bar -O ftp://ftp.ensembl.org/pub/release-91/variation/VEP/homo_sapiens_vep_91_GRCh37.tar.gz
     tar xzf homo_sapiens_vep_91_GRCh37.tar.gz
 	cd homo_sapiens/91_GRCh37
